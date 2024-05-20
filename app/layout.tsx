@@ -1,10 +1,6 @@
 import type {Metadata} from "next";
-import {Inter} from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/navigation/navigation";
-import Script from "next/script";
-
-const inter = Inter({subsets: ["latin"]});
 
 export const metadata: Metadata = {
   title: "Pwa Spike",
@@ -18,13 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-
     <body className="flex h-screen">
     <Navigation/>
     <main className="bg-gray-300 p-10 md:p-24 flex-grow">
       {children}
     </main>
-    <Script src="/service-worker.js"/>
     </body>
     </html>
   );
