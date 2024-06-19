@@ -2,6 +2,7 @@ import withPWA from "@ducanh2912/next-pwa";
 
 const pwaConfig = withPWA({
     dest: "public",
+    customWorkerDir: 'serviceworker',
     reloadOnOnline: true,
     aggressiveFrontEndNavCaching: true,
     fallbacks: {
