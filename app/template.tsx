@@ -1,27 +1,42 @@
 "use client"
+
 import {useEffect} from "react";
 
 export default function Template({children}: { children: React.ReactNode }) {
+  useEffect(() => {
+    const registerServiceWorkerAndSubscribe = async () => {
+      if ("serviceWorker" in navigator) {
+        try {
+          // // Register the service worker
+          // const registration = await navigator.serviceWorker.register("/sw.js");
 
-  // @ts-ignore
-  useEffect(async () => {
-    if ("serviceWorker" in navigator) {
-      const register = await navigator.serviceWorker.register("/workbox-0ea65fa9.js");
+          // Ensure the service worker is ready
+          const serviceWorkerReady = await navigator.serviceWorker.ready;
 
-      const subscription = await register.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: 'BOOnSoiP0OVcyxN09wM4NH4XQVpHEzMSWMX7lOMXRfwV44iAxKuq0LHxp-BJvVfRmHd1wHZV2D3jGt1Wv12Z_4o',
-      });
+          // Proceed with subscription only if the service worker is active
+          if (serviceWorkerReady) {
+            const subscription = await serviceWorkerReady.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+            });
 
-      const res = await fetch("http://localhost:3000/api/subscribe", {
-        method: "POST",
-        body: JSON.stringify(subscription),
-        headers: {
-          "content-type": "application/json",
-        },
-      });
-    }
+            // Perform the subscription fetch request
+            await fetch("http://localhost:3000/api/subscribe", {
+              method: "POST",
+              body: JSON.stringify(subscription),
+              headers: {
+                "content-type": "application/json",
+              },
+            });
+          }
+        } catch (error) {
+          console.error("Service Worker registration or subscription failed", error);
+        }
+      }
+    };
+
+    registerServiceWorkerAndSubscribe();
   }, []);
 
-  return <>{children}</>
+  return <>{children}</>;
 }

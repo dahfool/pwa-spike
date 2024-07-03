@@ -7,8 +7,6 @@ const activateEvent = () => {
     const icon = data.icon;
     const url = data.data.url;
 
-    console.log(event)
-
     const notificationOptions = {
       body: body,
       tag: "unique-tag", // Use a unique tag to prevent duplicate notifications
