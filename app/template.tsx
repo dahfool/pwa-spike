@@ -21,7 +21,7 @@ export default function Template({children}: { children: React.ReactNode }) {
             });
 
             // Perform the subscription fetch request
-            await fetch("http://localhost:3000/api/subscribe", {
+            await fetch("/api/subscribe", {
               method: "POST",
               body: JSON.stringify(subscription),
               headers: {
