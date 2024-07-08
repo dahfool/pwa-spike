@@ -1,4 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+import withPWA from "@ducanh2912/next-pwa";
 
-export default nextConfig;
+const pwaConfig = withPWA({
+    dest: "public",
+    customWorkerDir: 'serviceworker',
+    reloadOnOnline: true,
+    aggressiveFrontEndNavCaching: true,
+    fallbacks: {
+        // Failed page requests fallback to this.
+        document: "/offline"
+    }
+});
+
+// Export the combined configuration for Next.js with PWA support
+export default pwaConfig({});
