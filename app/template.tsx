@@ -6,32 +6,26 @@ export default function Template({children}: { children: React.ReactNode }) {
   useEffect(() => {
     const registerServiceWorkerAndSubscribe = async () => {
       if ("serviceWorker" in navigator) {
-        try {
-          // // Register the service worker
-          // const registration = await navigator.serviceWorker.register("/sw.js");
-
-          // Ensure the service worker is ready
-          const serviceWorkerReady = await navigator.serviceWorker.ready;
-
-          // Proceed with subscription only if the service worker is active
-          if (serviceWorkerReady) {
-            const subscription = await serviceWorkerReady.pushManager.subscribe({
-              userVisibleOnly: true,
-              applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+        navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
+          serviceWorkerRegistration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+          })
+            .then(async subscription => {
+              await fetch("/api/subscribe", {
+                method: "POST",
+                body: JSON.stringify(subscription),
+                headers: {
+                  "content-type": "application/json",
+                },
+              });
+              console.log('Subscribed to push notifications:', subscription);
+              // Send the subscription to your server
+            })
+            .catch(error => {
+              console.error('Error subscribing to push notifications:', error);
             });
-
-            // Perform the subscription fetch request
-            await fetch("/api/subscribe", {
-              method: "POST",
-              body: JSON.stringify(subscription),
-              headers: {
-                "content-type": "application/json",
-              },
-            });
-          }
-        } catch (error) {
-          console.error("Service Worker registration or subscription failed", error);
-        }
+        });
       }
     };
 
